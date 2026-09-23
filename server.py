@@ -26,6 +26,7 @@ def application(environ, start_response):
 
 
 app = application
+handler = app
 
 
 class BHStaysHandler(SimpleHTTPRequestHandler):
