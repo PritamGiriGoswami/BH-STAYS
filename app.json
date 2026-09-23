@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "BH Stays",
+    "slug": "bh-stays",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#F7F5F0"
+    },
+    "assetBundlePatterns": ["**/*"]
+  }
+}
