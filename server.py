@@ -1,8 +1,31 @@
 import os
+import mimetypes
+from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import unquote
 
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def application(environ, start_response):
+    """Serve the static site through WSGI hosts that expect an app export."""
+    request_path = unquote(environ.get("PATH_INFO", "/"))
+    relative_path = request_path.lstrip("/") or "index.html"
+    file_path = (Path(PROJECT_DIR) / relative_path).resolve()
+    project_path = Path(PROJECT_DIR).resolve()
+
+    if project_path not in file_path.parents or not file_path.is_file():
+        start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
+        return [b"Not Found"]
+
+    content_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
+    body = file_path.read_bytes()
+    start_response("200 OK", [("Content-Type", content_type), ("Content-Length", str(len(body)))])
+    return [body]
+
+
+app = application
 
 
 class BHStaysHandler(SimpleHTTPRequestHandler):
