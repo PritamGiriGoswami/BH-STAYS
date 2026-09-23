@@ -104,15 +104,20 @@ function Header({ title, subtitle }: { title: string; subtitle?: string }) {
 
 function HomeScreen({ onSelect }: { onSelect: (property: Property) => void }) {
   const [query, setQuery] = useState('');
-  const filtered = properties.filter((property) => `${property.name} ${property.city} ${property.category}`.toLowerCase().includes(query.toLowerCase()));
+  const [category, setCategory] = useState('All stays');
+  const filtered = properties.filter((property) => {
+    const matchesQuery = `${property.name} ${property.city} ${property.category}`.toLowerCase().includes(query.toLowerCase());
+    const matchesCategory = category === 'All stays' || property.category === category;
+    return matchesQuery && matchesCategory;
+  });
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.screenContent} showsVerticalScrollIndicator={false}>
       <Header title="Good morning, Aanya" subtitle="Where are you off to?" />
       <View style={styles.searchBox}><Icon name="search" size={20} color={colors.muted} /><TextInput value={query} onChangeText={setQuery} placeholder="Search stays or destinations" placeholderTextColor={colors.muted} style={styles.searchInput} /><Pressable style={styles.filterButton}><Icon name="options-outline" size={19} color={colors.paper} /></Pressable></View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
-        {['All stays', 'Cabins', 'Villas', 'Cottages'].map((category, index) => <Pressable key={category} style={[styles.categoryChip, index === 0 && styles.categoryChipActive]}><Text style={[styles.categoryText, index === 0 && styles.categoryTextActive]}>{category}</Text></Pressable>)}
+        {['All stays', 'Cabins', 'Villas', 'Cottages'].map((item) => <Pressable key={item} onPress={() => setCategory(item)} style={[styles.categoryChip, category === item && styles.categoryChipActive]}><Text style={[styles.categoryText, category === item && styles.categoryTextActive]}>{item}</Text></Pressable>)}
       </ScrollView>
-      <View style={styles.sectionHeading}><Text style={styles.sectionTitle}>Made for your next escape</Text><Text style={styles.linkText}>See all</Text></View>
+      <View style={styles.sectionHeading}><Text style={styles.sectionTitle}>Made for your next escape</Text><Pressable onPress={() => { setCategory('All stays'); setQuery(''); }}><Text style={styles.linkText}>See all</Text></Pressable></View>
       {filtered.map((property) => <PropertyCard key={property.id} property={property} onPress={() => onSelect(property)} />)}
       {filtered.length === 0 && <Text style={styles.emptyText}>No stays found. Try another place.</Text>}
     </ScrollView>
@@ -120,7 +125,8 @@ function HomeScreen({ onSelect }: { onSelect: (property: Property) => void }) {
 }
 
 function PropertyCard({ property, onPress }: { property: Property; onPress: () => void }) {
-  return <Pressable onPress={onPress} style={styles.propertyCard}><View><Image source={{ uri: property.image }} style={styles.propertyImage} /><View style={styles.imageBadge}><Icon name="star" size={13} color={colors.deepSage} /><Text style={styles.imageBadgeText}>{property.rating}</Text></View><View style={styles.heart}><Icon name="heart-outline" size={20} color={colors.paper} /></View></View><View style={styles.propertyInfo}><View><Text style={styles.propertyName}>{property.name}</Text><Text style={styles.propertyLocation}>{property.city} · {property.area}</Text></View><Text style={styles.price}>₹{property.price.toLocaleString('en-IN')} <Text style={styles.perNight}>/ night</Text></Text></View></Pressable>;
+  const [favorite, setFavorite] = useState(false);
+  return <Pressable onPress={onPress} style={styles.propertyCard}><View><Image source={{ uri: property.image }} style={styles.propertyImage} /><View style={styles.imageBadge}><Icon name="star" size={13} color={colors.deepSage} /><Text style={styles.imageBadgeText}>{property.rating}</Text></View><Pressable onPress={() => setFavorite((current) => !current)} style={styles.heart}><Icon name={favorite ? 'heart' : 'heart-outline'} size={20} color={favorite ? colors.coral : colors.paper} /></Pressable></View><View style={styles.propertyInfo}><View><Text style={styles.propertyName}>{property.name}</Text><Text style={styles.propertyLocation}>{property.city} · {property.area}</Text></View><Text style={styles.price}>₹{property.price.toLocaleString('en-IN')} <Text style={styles.perNight}>/ night</Text></Text></View></Pressable>;
 }
 
 function DetailScreen({ property, onBack, onBook }: { property: Property; onBack: () => void; onBook: () => void }) {
@@ -153,7 +159,7 @@ export default function App() {
   const [bookingMode, setBookingMode] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([initialBooking]);
   if (!authenticated) return <AuthScreen onEnter={() => setAuthenticated(true)} />;
-  if (bookingMode && selected) return <BookingScreen property={selected} onBack={() => setBookingMode(false)} onConfirm={(booking) => { setBookings((current) => [booking, ...current]); setBookingMode(false); setScreen('bookings'); }} />;
+  if (bookingMode && selected) return <BookingScreen property={selected} onBack={() => setBookingMode(false)} onConfirm={(booking) => { setBookings((current) => [booking, ...current]); setBookingMode(false); setSelected(null); setScreen('bookings'); }} />;
   if (selected) return <DetailScreen property={selected} onBack={() => setSelected(null)} onBook={() => setBookingMode(true)} />;
   return <SafeAreaView style={styles.app}><StatusBar barStyle="dark-content" /><View style={styles.main}>{screen === 'home' && <HomeScreen onSelect={setSelected} />}{screen === 'bookings' && <BookingsScreen bookings={bookings} onSelect={setSelected} />}{screen === 'profile' && <ProfileScreen onSignOut={() => setAuthenticated(false)} />}</View><TabBar screen={screen} setScreen={setScreen} /></SafeAreaView>;
 }
