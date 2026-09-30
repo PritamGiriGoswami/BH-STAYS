@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Headquarters & Contact | BH Stays</title>
+  <link rel="icon" type="image/x-icon" href="image/logo.jfif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="s2.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+        <span>BH Stays</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="aboutus.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About Us</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn-auth"><i class="fa-solid fa-compass"></i> Explore Stays</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero-section" style="padding: 3rem 1.5rem 4rem;">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fa-solid fa-location-dot"></i> Global Presence</div>
+      <h1 class="hero-title">Contact & <span>Headquarters</span></h1>
+      <p class="hero-subtitle">Our international hospitality team is available 24/7 to assist with your private booking inquiries.</p>
+    </div>
+  </section>
+
+  <main class="content-section">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:2rem;">
+      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:2rem;">
+        <h3 style="font-size:1.5rem; margin-bottom:1.5rem;"><i class="fa-solid fa-building-user" style="color:var(--accent-gold);"></i> Global HQ</h3>
+        <p style="color:var(--text-muted); line-height:1.8;">
+          <strong>BookHaven Stays Inc.</strong><br>
+          750 Fifth Avenue, Suite 2400<br>
+          New York, NY 10019, USA
+        </p>
+
+        <hr style="border:none; border-top:1px solid var(--border-color); margin:1.5rem 0;">
+
+        <h4 style="font-size:1.1rem; margin-bottom:1rem;">Support Concierge</h4>
+        <p style="color:var(--text-muted); margin-bottom:0.5rem;"><i class="fa-solid fa-envelope" style="color:var(--accent-rose);"></i> concierge@bhstays.com</p>
+        <p style="color:var(--text-muted); margin-bottom:0.5rem;"><i class="fa-solid fa-phone" style="color:var(--accent-emerald);"></i> +1 (800) 555-STAYS</p>
+        <p style="color:var(--text-muted);"><i class="fa-solid fa-clock" style="color:var(--accent-gold);"></i> 24 Hours / 7 Days a week</p>
+      </div>
+
+      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:2rem;">
+        <h3 style="font-size:1.5rem; margin-bottom:1.5rem;"><i class="fa-solid fa-paper-plane" style="color:var(--accent-rose);"></i> Send a Direct Inquiry</h3>
+        <form onsubmit="event.preventDefault(); showToast('Inquiry sent! A concierge agent will reply shortly.', 'fa-paper-plane');">
+          <div class="search-item" style="margin-bottom:1rem;">
+            <label>Name</label>
+            <input type="text" class="search-input" placeholder="Your full name" required>
+          </div>
+          <div class="search-item" style="margin-bottom:1rem;">
+            <label>Email</label>
+            <input type="email" class="search-input" placeholder="Your email address" required>
+          </div>
+          <div class="search-item" style="margin-bottom:1.5rem;">
+            <label>Inquiry Details</label>
+            <textarea class="search-input" style="height:110px; resize:none;" placeholder="How can our concierge assist your stay?" required></textarea>
+          </div>
+          <button type="submit" class="btn-search" style="width:100%;">Submit Inquiry</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="border:none;">
+      <p>&copy; 2026 BookHaven Stays. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

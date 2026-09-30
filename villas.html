@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Luxury Villas | BH Stays</title>
+  <link rel="icon" type="image/x-icon" href="image/logo.jfif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="s2.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+        <span>BH Stays</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link active"><i class="fa-solid fa-layer-group"></i> Categories <i class="fa-solid fa-chevron-down" style="font-size:0.75rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item"><a href="apartments.html"><i class="fa-solid fa-building"></i> Apartments</a></li>
+            <li class="dropdown-item"><a href="resorts.html"><i class="fa-solid fa-umbrella-beach"></i> Resorts</a></li>
+            <li class="dropdown-item"><a href="villas.html"><i class="fa-solid fa-house-user"></i> Villas</a></li>
+            <li class="dropdown-item"><a href="cottages.html"><i class="fa-solid fa-tree"></i> Cottages</a></li>
+            <li class="dropdown-item"><a href="cabins.html"><i class="fa-solid fa-campground"></i> Cabins</a></li>
+            <li class="dropdown-item"><a href="rooms.html"><i class="fa-solid fa-bed"></i> Rooms</a></li>
+          </ul>
+        </li>
+        <li class="nav-item-dropdown">
+          <a href="#" class="nav-link"><i class="fa-solid fa-star"></i> Hotel Rating <i class="fa-solid fa-chevron-down" style="font-size:0.75rem;"></i></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item"><a href="5star.html"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> 5-Star Luxury</a></li>
+            <li class="dropdown-item"><a href="4star.html"><i class="fa-solid fa-star"></i> 4-Star Premium</a></li>
+            <li class="dropdown-item"><a href="3 star.html"><i class="fa-solid fa-star"></i> 3-Star Comfort</a></li>
+            <li class="dropdown-item"><a href="2 star.html"><i class="fa-solid fa-star"></i> 2-Star Budget</a></li>
+            <li class="dropdown-item"><a href="unrated.html"><i class="fa-regular fa-star"></i> Unrated Gem</a></li>
+          </ul>
+        </li>
+        <li><a href="aboutus.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About Us</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="bookmark-btn" onclick="window.location.href='index.html'">
+          <i class="fa-solid fa-heart" style="color:var(--accent-rose);"></i>
+          <span>Favorites</span>
+          <span class="badge-count" id="bookmark-count">0</span>
+        </button>
+        <a href="login.html" class="btn-auth"><i class="fa-solid fa-user"></i> Sign In</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero-section" style="padding: 3rem 1.5rem 4rem;">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fa-solid fa-house-user"></i> Secluded Sanctuary</div>
+      <h1 class="hero-title">Private <span>Villas</span></h1>
+      <p class="hero-subtitle">Opulent private estates with heated pools, private chef options, and dedicated staff.</p>
+    </div>
+  </section>
+
+  <div class="category-container">
+    <div class="category-bar" id="category-bar"></div>
+  </div>
+
+  <main class="content-section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Villa Estates</h2>
+        <p class="section-subtitle" id="results-count">Loading villas...</p>
+      </div>
+
+      <div class="filter-controls">
+        <select class="filter-select" id="sort-select">
+          <option value="recommended">Sort by: Featured</option>
+          <option value="rating">Sort by: Guest Rating</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="stays-grid" id="stays-grid"></div>
+  </main>
+
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-stay-title">Complete Your Reservation</h3>
+        <button class="modal-close" onclick="closeBookingModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="booking-summary-card">
+          <img id="modal-stay-img" src="" alt="Property" class="summary-img">
+          <div class="summary-details">
+            <h4 id="modal-stay-title-summary">Property Reservation</h4>
+            <p style="color:var(--text-muted); font-size:0.85rem;" id="modal-stay-location"></p>
+            <div class="summary-price" id="modal-stay-price"></div>
+          </div>
+        </div>
+
+        <form id="booking-form">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+            <div class="search-item">
+              <label for="modal-checkin"><i class="fa-solid fa-calendar-days"></i> Check-in Date</label>
+              <input type="date" id="modal-checkin" class="search-input" required>
+            </div>
+            <div class="search-item">
+              <label for="modal-checkout"><i class="fa-solid fa-calendar-days"></i> Check-out Date</label>
+              <input type="date" id="modal-checkout" class="search-input" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+            <div class="search-item">
+              <label for="guest-name"><i class="fa-solid fa-user"></i> Full Name</label>
+              <input type="text" id="guest-name" class="search-input" placeholder="John Doe" required>
+            </div>
+            <div class="search-item">
+              <label for="guest-email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+              <input type="email" id="guest-email" class="search-input" placeholder="john@example.com" required>
+            </div>
+          </div>
+
+          <div class="pricing-breakdown">
+            <div class="breakdown-row">
+              <span>Duration Stay</span>
+              <span id="calc-nights">1 night</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Base Accommodation</span>
+              <span id="calc-base">₹0</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Service & Hospitality Fee (10%)</span>
+              <span id="calc-service">₹0</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Occupancy Tax (5%)</span>
+              <span id="calc-taxes">₹0</span>
+            </div>
+            <div class="breakdown-row total">
+              <span>Total Price</span>
+              <span id="calc-total">₹0</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-search" style="width:100%; margin-top:1.5rem;">
+            <i class="fa-solid fa-lock"></i> Confirm & Pay Securely
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="border:none;">
+      <p>&copy; 2026 BookHaven Stays. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      state.category = 'villas';
+      renderCategoryPills();
+      renderStays();
+    });
+  </script>
+</body>
+</html>
