@@ -5,7 +5,7 @@ Expo / React Native client for the BH Stays booking experience.
 ## Run
 
 ```powershell
-cd mobile-app
+cd frontend/mobile-app
 npm install
 npx expo start
 ```

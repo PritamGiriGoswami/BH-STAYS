@@ -24,7 +24,7 @@ const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10', 10),
   dbPath: path.resolve(__dirname, '..', process.env.DB_PATH || './data/bh-stays.sqlite'),
-  staticDir: path.resolve(__dirname, '..', process.env.STATIC_DIR || '..'),
+  staticDir: path.resolve(__dirname, '..', process.env.STATIC_DIR || '../frontend/web'),
 };
 
 module.exports = config;

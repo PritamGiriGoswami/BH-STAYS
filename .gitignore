@@ -4,4 +4,6 @@ __pycache__/
 *.pyd
 .vscode/
 .DS_Store
-+
+
+# Leftover local artifacts from the previous mobile app location.
+/mobile-app/

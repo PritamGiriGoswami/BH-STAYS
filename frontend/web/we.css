@@ -237,7 +237,7 @@ img{
 
 /* booking form */
 .book{
-    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("images/banner-img.jpg") center/cover no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("image/pexels-nudos-adicora-11448497.jpg") center/cover no-repeat;
     color: #fff;
     padding: 40px 60px;
 }
