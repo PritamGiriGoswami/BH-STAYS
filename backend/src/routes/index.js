@@ -4,6 +4,7 @@ const propertiesRoutes = require('./properties');
 const bookingsRoutes = require('./bookings');
 const bookmarksRoutes = require('./bookmarks');
 const newsletterRoutes = require('./newsletter');
+const paymentsRoutes = require('./payments');
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/properties', propertiesRoutes);
 router.use('/bookings', bookingsRoutes);
 router.use('/bookmarks', bookmarksRoutes);
 router.use('/newsletter', newsletterRoutes);
+router.use('/payments', paymentsRoutes);
 
 module.exports = router;

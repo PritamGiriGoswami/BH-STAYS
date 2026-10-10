@@ -26,6 +26,8 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
+The API runs at `http://localhost:3001` by default, alongside the Python preview on port 8000. Configure Razorpay test or live keys in `backend/.env` to enable card and netbanking checkout. Guests can also display the uploaded static UPI QR, but that transfer is not verified by Razorpay or recorded automatically. Do not treat a QR transfer as a confirmed booking until it has been independently verified. Keep the Razorpay key secret on the server and never commit `.env`.
+
 Set a private `JWT_SECRET` in `backend/.env` before using authentication beyond local development.
 
 ## Run the Mobile App

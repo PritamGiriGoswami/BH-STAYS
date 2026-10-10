@@ -19,7 +19,7 @@ function requireSecret(name) {
 
 const config = {
   env: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.PORT || '8000', 10),
+  port: parseInt(process.env.PORT || '3001', 10),
   jwtSecret: requireSecret('JWT_SECRET'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10', 10),

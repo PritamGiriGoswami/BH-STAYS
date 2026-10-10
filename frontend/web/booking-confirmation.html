@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation | BH Stays</title>
+  <link rel="icon" type="image/x-icon" href="image/logo.jfif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="s2.css">
+  <style>
+    .confirmation-wrapper { min-height: calc(100vh - 80px); display: grid; place-items: center; padding: 3rem 1.5rem; }
+    .confirmation-card { width: 100%; max-width: 620px; padding: 2.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: var(--bg-card); box-shadow: var(--shadow-lg); }
+    .confirmation-icon { color: #22c55e; font-size: 2.5rem; }
+    .confirmation-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    .confirmation-detail { padding: 1rem; border-radius: var(--radius-md); background: var(--bg-surface); overflow-wrap: anywhere; }
+    .confirmation-detail span { display: block; color: var(--text-muted); font-size: .78rem; margin-bottom: .35rem; }
+    @media (max-width: 520px) { .confirmation-card { padding: 1.5rem; } .confirmation-details { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+        <span>BH Stays</span>
+      </a>
+      <div class="nav-actions"><a href="index.html" class="btn-auth">Explore stays</a></div>
+    </div>
+  </header>
+
+  <main class="confirmation-wrapper">
+    <section class="confirmation-card" aria-live="polite">
+      <p id="confirmation-status"><i class="fa-solid fa-spinner fa-spin"></i> Checking your booking...</p>
+      <div id="confirmation-content" hidden>
+        <i class="fa-solid fa-circle-check confirmation-icon" aria-hidden="true"></i>
+        <h1>Booking confirmed</h1>
+        <p id="confirmation-summary" style="color:var(--text-muted);"></p>
+        <div class="confirmation-details">
+          <div class="confirmation-detail"><span>Booking ID</span><strong id="booking-id"></strong></div>
+          <div class="confirmation-detail"><span>Property</span><strong id="property-name"></strong></div>
+          <div class="confirmation-detail"><span>Check-in</span><strong id="check-in"></strong></div>
+          <div class="confirmation-detail"><span>Check-out</span><strong id="check-out"></strong></div>
+          <div class="confirmation-detail"><span>Amount paid</span><strong id="booking-total"></strong></div>
+          <div class="confirmation-detail"><span>Payment method</span><strong id="payment-method"></strong></div>
+        </div>
+        <a href="index.html" class="btn-search">Continue exploring stays</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const status = document.getElementById('confirmation-status');
+      const token = localStorage.getItem('bh_auth_token');
+      const bookingId = new URLSearchParams(window.location.search).get('bookingId');
+      const isLocalStaticPreview =
+        ['localhost', '127.0.0.1'].includes(window.location.hostname) && window.location.port === '8000';
+      const apiBase = localStorage.getItem('bh_api_base') ||
+        (isLocalStaticPreview ? 'http://localhost:3001' : window.location.origin);
+
+      if (!token || !/^\d+$/.test(bookingId || '')) {
+        status.textContent = 'We could not load this booking. Sign in and use the confirmation link from your completed payment.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/api/bookings/${encodeURIComponent(bookingId)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Could not load your booking.');
+
+        const booking = result.booking;
+        if (booking.status !== 'Confirmed' || booking.paymentStatus !== 'paid') {
+          throw new Error('This booking is not confirmed because its payment has not been captured.');
+        }
+
+        const amount = new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          maximumFractionDigits: 0,
+        }).format(booking.total);
+        document.getElementById('booking-id').textContent = booking.id;
+        document.getElementById('property-name').textContent = booking.property.title;
+        document.getElementById('check-in').textContent = booking.checkIn;
+        document.getElementById('check-out').textContent = booking.checkOut;
+        document.getElementById('booking-total').textContent = amount;
+        document.getElementById('payment-method').textContent =
+          `${booking.paymentProvider || 'Payment'}${booking.paymentMethod ? ` / ${booking.paymentMethod.toUpperCase()}` : ''}`;
+        document.getElementById('confirmation-summary').textContent =
+          `Thank you, ${booking.guestName}. Your payment has been verified and your reservation is confirmed.`;
+        status.hidden = true;
+        document.getElementById('confirmation-content').hidden = false;
+      } catch (error) {
+        status.textContent = error.message || 'Could not load your booking. Please contact support.';
+      }
+    });
+  </script>
+</body>
+</html>

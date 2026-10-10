@@ -133,6 +133,9 @@
       <div class="auth-header">
         <h2>Welcome to <span>BH Stays</span></h2>
         <p style="color:var(--text-muted); font-size:0.9rem;">Sign in to access secret member deals & manage reservations.</p>
+        <p id="booking-signin-notice" hidden style="margin-top:1rem; color:var(--accent-gold);">
+          Sign in to continue. Your selected stay and booking details will be restored afterward.
+        </p>
       </div>
 
       <div class="auth-tabs">
@@ -141,12 +144,12 @@
       </div>
 
       <!-- LOGIN FORM -->
-      <form id="login-form" onsubmit="handleAuthSubmit(event, 'sign in')">
+      <form id="login-form" onsubmit="handleAuthSubmit(event)">
         <div class="form-group">
           <label>Email Address</label>
           <div class="input-with-icon">
             <i class="fa-solid fa-envelope"></i>
-            <input type="email" class="search-input" placeholder="guest@example.com" required>
+            <input type="email" name="email" class="search-input" placeholder="guest@example.com" required>
           </div>
         </div>
 
@@ -154,7 +157,7 @@
           <label>Password</label>
           <div class="input-with-icon">
             <i class="fa-solid fa-lock"></i>
-            <input type="password" class="search-input" placeholder="••••••••" required>
+            <input type="password" name="password" class="search-input" placeholder="Enter your password" required>
           </div>
         </div>
 
@@ -169,12 +172,12 @@
       </form>
 
       <!-- SIGNUP FORM -->
-      <form id="signup-form" style="display:none;" onsubmit="handleAuthSubmit(event, 'account creation')">
+      <form id="signup-form" style="display:none;" onsubmit="handleAuthSubmit(event)">
         <div class="form-group">
           <label>Full Name</label>
           <div class="input-with-icon">
             <i class="fa-solid fa-user"></i>
-            <input type="text" class="search-input" placeholder="Jane Doe" required>
+            <input type="text" name="name" class="search-input" placeholder="Jane Doe" minlength="2" required>
           </div>
         </div>
 
@@ -182,7 +185,7 @@
           <label>Email Address</label>
           <div class="input-with-icon">
             <i class="fa-solid fa-envelope"></i>
-            <input type="email" class="search-input" placeholder="jane@example.com" required>
+            <input type="email" name="email" class="search-input" placeholder="jane@example.com" required>
           </div>
         </div>
 
@@ -190,7 +193,7 @@
           <label>Password</label>
           <div class="input-with-icon">
             <i class="fa-solid fa-lock"></i>
-            <input type="password" class="search-input" placeholder="Create a strong password" required>
+            <input type="password" name="password" class="search-input" placeholder="Use at least 8 characters" minlength="8" required>
           </div>
         </div>
 
@@ -233,13 +236,53 @@
       }
     }
 
-    function handleAuthSubmit(e, actionName) {
+    async function handleAuthSubmit(e) {
       e.preventDefault();
-      showToast(`Successful ${actionName}! Redirecting to stays...`, 'fa-circle-check');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1200);
+      const form = e.currentTarget;
+      const isSignup = form.id === 'signup-form';
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalLabel = submitButton.textContent.trim();
+      submitButton.disabled = true;
+      submitButton.textContent = isSignup ? 'Creating account...' : 'Signing in...';
+
+      try {
+        const response = await fetch(`${window.BH_API_BASE}/api/auth/${isSignup ? 'register' : 'login'}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          showToast(result.error || 'Could not complete sign in. Please try again.', 'fa-circle-xmark');
+          return;
+        }
+
+        localStorage.setItem('bh_auth_token', result.token);
+        localStorage.setItem('bh_user', JSON.stringify(result.user));
+        const returnToBooking = new URLSearchParams(window.location.search).get('continue') === 'booking';
+        showToast(
+          isSignup
+            ? (returnToBooking ? 'Account created. Restoring your booking...' : 'Account created. Opening your stays...')
+            : (returnToBooking ? 'Sign in complete. Restoring your booking...' : 'Sign in complete. Opening your stays...'),
+          'fa-circle-check'
+        );
+        setTimeout(() => {
+          const destination = returnToBooking ? 'index.html?resumeBooking=1' : 'index.html';
+          window.location.assign(new URL(destination, window.location.href).href);
+        }, 900);
+      } catch (error) {
+        console.error('[auth] Request failed:', error);
+        showToast('Sign-in service is unavailable. Please try again shortly.', 'fa-circle-xmark');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalLabel;
+      }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const continueBooking = new URLSearchParams(window.location.search).get('continue') === 'booking';
+      document.getElementById('booking-signin-notice').hidden = !continueBooking;
+    });
   </script>
-</body>
+<script>document.addEventListener("DOMContentLoaded", function(){ try { if(typeof updateAuthUI==="function") updateAuthUI(); } catch(e){} });</script></body>
 </html>

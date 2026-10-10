@@ -37,6 +37,11 @@ function toPublic(row) {
     taxes: row.taxes,
     total: row.total,
     status: row.status,
+    paymentStatus: row.payment_status,
+    paymentProvider: row.payment_provider,
+    paymentOrderId: row.payment_order_id,
+    paymentId: row.payment_id,
+    paymentMethod: row.payment_method,
     createdAt: row.created_at,
   };
 }
@@ -57,6 +62,11 @@ const SELECT_WITH_PROPERTY = `
     b.taxes,
     b.total,
     b.status,
+    b.payment_status,
+    b.payment_provider,
+    b.payment_order_id,
+    b.payment_id,
+    b.payment_method,
     b.created_at,
     p.title AS property_title,
     p.location AS property_location,
@@ -65,13 +75,23 @@ const SELECT_WITH_PROPERTY = `
   JOIN properties p ON p.id = b.property_id
 `;
 
-function create({ userId, property, guestName, guestEmail, checkIn, checkOut, pricing }) {
+function create({
+  userId,
+  property,
+  guestName,
+  guestEmail,
+  checkIn,
+  checkOut,
+  pricing,
+  status = 'Pending Payment',
+  paymentStatus = 'unpaid',
+}) {
   const info = db
     .prepare(`
       INSERT INTO bookings
         (user_id, property_id, guest_name, guest_email, check_in, check_out,
-         nights, price_per_night, base_price, service_fee, taxes, total)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         nights, price_per_night, base_price, service_fee, taxes, total, status, payment_status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
     .run(
       userId,
@@ -85,9 +105,75 @@ function create({ userId, property, guestName, guestEmail, checkIn, checkOut, pr
       pricing.basePrice,
       pricing.serviceFee,
       pricing.taxes,
-      pricing.total
+      pricing.total,
+      status,
+      paymentStatus
     );
   return findById(Number(info.lastInsertRowid), userId);
+}
+
+function findByPaymentId(paymentId, userId) {
+  const row = db
+    .prepare(`${SELECT_WITH_PROPERTY} WHERE b.payment_id = ? AND b.user_id = ? LIMIT 1`)
+    .get(paymentId, userId);
+  return toPublicWithProperty(row);
+}
+
+function findByPaymentOrderId(orderId, userId) {
+  const row = db
+    .prepare(`${SELECT_WITH_PROPERTY} WHERE b.payment_order_id = ? AND b.user_id = ? LIMIT 1`)
+    .get(orderId, userId);
+  return toPublicWithProperty(row);
+}
+
+function createPaid({
+  userId,
+  property,
+  guestName,
+  guestEmail,
+  checkIn,
+  checkOut,
+  pricing,
+  paymentOrderId,
+  paymentId,
+  paymentMethod,
+}) {
+  const existing = findByPaymentOrderId(paymentOrderId, userId);
+  if (existing) return existing;
+
+  try {
+    const info = db
+      .prepare(`
+        INSERT INTO bookings
+          (user_id, property_id, guest_name, guest_email, check_in, check_out,
+           nights, price_per_night, base_price, service_fee, taxes, total, status,
+           payment_status, payment_provider, payment_order_id, payment_id, payment_method)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Confirmed', 'paid', 'razorpay', ?, ?, ?)
+      `)
+      .run(
+        userId,
+        property.id,
+        guestName,
+        guestEmail,
+        checkIn,
+        checkOut,
+        pricing.nights,
+        property.price,
+        pricing.basePrice,
+        pricing.serviceFee,
+        pricing.taxes,
+        pricing.total,
+        paymentOrderId,
+        paymentId,
+        paymentMethod || null
+      );
+    return findById(Number(info.lastInsertRowid), userId);
+  } catch (err) {
+    const duplicate = findByPaymentOrderId(paymentOrderId, userId) ||
+      findByPaymentId(paymentId, userId);
+    if (duplicate) return duplicate;
+    throw err;
+  }
 }
 
 function findById(id, userId) {
@@ -118,4 +204,13 @@ function toPublicWithProperty(row) {
   };
 }
 
-module.exports = { computePricing, create, findById, listByUser, toPublic };
+module.exports = {
+  computePricing,
+  create,
+  createPaid,
+  findById,
+  findByPaymentId,
+  findByPaymentOrderId,
+  listByUser,
+  toPublic,
+};

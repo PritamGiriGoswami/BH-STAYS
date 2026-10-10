@@ -76,6 +76,22 @@ const MIGRATIONS = [
       );
     `,
   },
+  {
+    version: 2,
+    name: 'track_booking_payment_status',
+    up: `
+      ALTER TABLE bookings ADD COLUMN payment_status TEXT NOT NULL DEFAULT 'unknown';
+      ALTER TABLE bookings ADD COLUMN payment_provider TEXT;
+      ALTER TABLE bookings ADD COLUMN payment_order_id TEXT;
+      ALTER TABLE bookings ADD COLUMN payment_id TEXT;
+      ALTER TABLE bookings ADD COLUMN payment_method TEXT;
+
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_payment_order_id
+        ON bookings(payment_order_id) WHERE payment_order_id IS NOT NULL;
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_payment_id
+        ON bookings(payment_id) WHERE payment_id IS NOT NULL;
+    `,
+  },
 ];
 
 function runMigrations() {
