@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Booking Confirmation — {{hotelName}}</title>
+</head>
+<body style="margin:0; padding:0; background:#0b1220; font-family:Arial, Helvetica, sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0b1220; padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; width:100%; background:#161f34; border-radius:12px; border:1px solid rgba(245,158,11,0.35);">
+          <tr>
+            <td style="padding:28px 32px 8px 32px;">
+              <p style="margin:0; font-size:20px; font-weight:bold; color:#f59e0b;">BH Stays</p>
+              <h1 style="margin:12px 0 0 0; font-size:22px; color:#ffffff;">Your booking is confirmed!</h1>
+              <p style="margin:8px 0 0 0; font-size:14px; color:#94a3b8;">Thank you, {{guestName}}. We look forward to hosting you.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:rgba(11,18,32,0.6); border-radius:8px;">
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid rgba(148,163,184,0.15);">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Hotel / Property</p>
+                    <p style="margin:4px 0 0 0; font-size:16px; font-weight:bold; color:#ffffff;">{{hotelName}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid rgba(148,163,184,0.15);">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Booking ID</p>
+                    <p style="margin:4px 0 0 0; font-size:16px; font-weight:bold; color:#ffffff;">{{bookingId}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid rgba(148,163,184,0.15); width:50%;">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Check-in</p>
+                    <p style="margin:4px 0 0 0; font-size:15px; color:#ffffff;">{{checkIn}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid rgba(148,163,184,0.15);">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Check-out</p>
+                    <p style="margin:4px 0 0 0; font-size:15px; color:#ffffff;">{{checkOut}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px; border-bottom:1px solid rgba(148,163,184,0.15);">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Amount paid</p>
+                    <p style="margin:4px 0 0 0; font-size:16px; font-weight:bold; color:#ffffff;">{{amountPaid}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#94a3b8;">Payment method</p>
+                    <p style="margin:4px 0 0 0; font-size:15px; color:#ffffff;">{{paymentMethod}}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 32px 28px 32px;">
+              <p style="margin:0; font-size:13px; color:#94a3b8;">If you have any questions about your reservation, reply to this email. Have a wonderful stay!</p>
+              <p style="margin:16px 0 0 0; font-size:12px; color:#64748b;">— The BH Stays Team</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
